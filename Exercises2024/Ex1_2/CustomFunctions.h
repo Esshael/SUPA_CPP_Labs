@@ -3,33 +3,34 @@
 
 #include <vector>
 #include <string>
-#include <utility>  // For std::pair
+#include <utility>
 
-// Function to read data from a file (x, y pairs)
+// Function declarations
 void readDataFromFile(const std::string& filename, std::vector<std::pair<float, float>>& data);
-
-// Function to read errors from a file (expected errors for each y value)
-void readErrorsFromFile(const std::string& filename, std::vector<float>& errors);
+void printData(const std::vector<std::pair<float, float>>& data, int n);
+std::vector<float> calculateMagnitudes(const std::vector<std::pair<float, float>>& data);
 
 // Function to perform least squares fit and calculate χ²/NDF
 void fitLineAndCalculateChiSquared(const std::vector<std::pair<float, float>>& data, 
                                     const std::vector<float>& errors, 
                                     float& chiSquared, 
-                                    float& degreesOfFreedom, 
+                                    int& degreesOfFreedom,  // Pass as int
                                     std::string& lineEquation);
 
-// Function to calculate x^y for each data point, rounding y to nearest whole number
-void calculateXToThePowerY(std::vector<std::pair<float, float>>& data);
+// Function to save the fitted line equation to a file
+void saveFittedLineToFile(const std::string& lineEquation, const std::string& filename);
 
-// Overloaded print functions for different types of data
-void printData(const std::vector<std::pair<float, float>>& data, int n);
-void printData(const std::vector<float>& magnitudes);
-void printData(const std::string& lineEquation);
-void printData(const float& chiSquared, const float& degreesOfFreedom);
+// Function to save chi-squared value to a file
+void saveChiSquaredToFile(float chiSquared, const std::string& filename);
 
-// Function to save results to different output files
-void saveResultsToFile(const std::string& filename, const std::string& content);
-void saveResultsToFile(const std::string& filename, const float& chiSquared, const float& degreesOfFreedom);
-void saveResultsToFile(const std::string& filename, const std::vector<std::pair<float, float>>& data);
 
-#endif // CUSTOMFUNCTIONS_H
+// Function to read errors from a file
+void readErrorsFromFile(const std::string& filename, std::vector<float>& errors);
+
+
+void saveResultsToFile(const std::vector<float>& data, const std::string& filename);
+void calculateChiSquared(const std::vector<std::pair<float, float>>& data, const std::vector<float>& errors);  // chi-squared calculation declaration
+std::vector<float> calculateXPowerY(const std::vector<std::pair<float, float>>& data);  // New function to calculate x^y
+void saveDataToFile(const std::vector<std::pair<float, float>>& data, const std::string& filename);  // Save function
+
+#endif
