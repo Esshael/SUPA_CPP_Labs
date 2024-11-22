@@ -1,3 +1,8 @@
+// Instruction for using in bash:
+// @Esshael ➜ /workspaces/SUPA_CPP_Labs/Exercises2024/Ex1_2 (main) $ cd /workspaces/SUPA_CPP_Labs/Exercises2024/Ex1_2
+// @Esshael ➜ /workspaces/SUPA_CPP_Labs/Exercises2024/Ex1_2 (main) $ g++ -std=c++11 -Wall -o AnalyseData AnalyseData.cxx CustomFunctions.cxx
+// @Esshael ➜ /workspaces/SUPA_CPP_Labs/Exercises2024/Ex1_2 (main) $ ./AnalyseData
+
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -13,10 +18,6 @@ void displayMenu() {
     std::cout << "5. Save results to files\n";
     std::cout << "6. Exit\n";
 }
-#include <iostream>
-#include <vector>
-#include "CustomFunctions.h"
-
 int main() {
     std::vector<std::pair<float, float>> data;
     std::vector<float> errors;
@@ -122,7 +123,6 @@ int main() {
                     break;
                 }
 
-
             case 6:
                 continueRunning = false;
                 std::cout << "Exiting program." << std::endl;
@@ -132,6 +132,12 @@ int main() {
                 std::cout << "Invalid choice! Please try again." << std::endl;
         }
 
+        // If user selects '6', exit immediately without asking to perform another action
+        if (!continueRunning) {
+            break;
+        }
+
+        // Prompt for another action unless the program is set to exit
         char again;
         std::cout << "Do you want to perform another action? (y/n): ";
         std::cin >> again;
