@@ -1,33 +1,47 @@
+// AnalyseData.cxx
 #include <iostream>
-#include <fstream> // For file input/output
-#include <string>  // For working with strings
-
-#include <iostream>
-#include <fstream>
 #include <vector>
-#include <utility> // For std::pair
+#include "CustomFunctions.h"
 
 int main() {
-    std::ifstream inputFile("input2D_float.txt");
-    if (!inputFile) {
-        std::cerr << "Error: Unable to open file 'input2D float.txt'. Please check the file path and permissions." << std::endl;
+    std::vector<std::pair<float, float>> data;
+
+    // Read data from file
+    readDataFromFile("input2D_float.txt", data);
+
+    if (data.empty()) {
+        std::cerr << "No data to process!" << std::endl;
         return 1;
     }
 
-    // Vector of pairs to hold (x, y) coordinates
-    std::vector<std::pair<float, float>> data;
+    // Ask the user which function to use
+    int choice;
+    std::cout << "Choose an option:\n";
+    std::cout << "1. Print data\n";
+    std::cout << "2. Calculate magnitudes\n";
+    std::cout << "3. Fit a line to the data\n";
+    std::cin >> choice;
 
-    float x, y;
-    while (inputFile >> x >> y) {
-        data.emplace_back(x, y); // Store each (x, y) pair in the vector
-    }
-
-    inputFile.close();
-
-    // Print the data from the vector
-    std::cout << "Contents of 'input2D float.txt' (from data structure):" << std::endl;
-    for (const auto& point : data) {
-        std::cout << "(" << point.first << ", " << point.second << ")" << std::endl;
+    if (choice == 1) {
+        // Ask for number of lines to print
+        int n;
+        std::cout << "Enter the number of lines to print: ";
+        std::cin >> n;
+        
+        // Print data
+        printData(n, data);
+    } else if (choice == 2) {
+        // Calculate and print magnitudes
+        calculateMagnitudes(data);
+    } else if (choice == 3) {
+        // Fit a line to the data
+        if (data.size() > 1) {
+            fitLine(data);
+        } else {
+            std::cout << "Insufficient data to fit a line!" << std::endl;
+        }
+    } else {
+        std::cout << "Invalid choice!" << std::endl;
     }
 
     return 0;
