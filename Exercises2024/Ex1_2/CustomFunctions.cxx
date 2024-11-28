@@ -133,22 +133,33 @@ void fitLineAndCalculateChiSquared(const std::vector<std::pair<float, float>>& d
 
 
 
-// Calculate x^y for each data point with y rounded to nearest whole number
+// Recursive function to calculate x^y using exponentiation by squaring
+static float power(float x, int y) {
+    if (y == 0) {
+        return 1;  // Base case: x^0 = 1
+    } else if (y > 0) {
+        if (y % 2 == 0) {
+            float half = power(x, y / 2);  // Recurse with y / 2
+            return half * half;
+        } else {
+            return x * power(x, y - 1);  // Recurse with y - 1
+        }
+    } else {
+        return 1 / power(x, -y);  // Handle negative exponents
+    }
+}
+
+// Calculate x^y for each data point with y rounded to the nearest whole number
 std::vector<float> calculateXPowerY(const std::vector<std::pair<float, float>>& data) {
     std::vector<float> result;
     for (const auto& point : data) {
         int y_rounded = std::round(point.second);  // Round y to the nearest whole number
-        float value = 1;
-        for (int i = 0; i < std::abs(y_rounded); ++i) {
-            value *= point.first;  // Multiply x by itself abs(y_rounded) times
-        }
-        if (y_rounded < 0) {
-            value = 1 / value;  // If y is negative, calculate the reciprocal
-        }
+        float value = power(point.first, y_rounded);  // Calculate x^y using the power function
         result.push_back(value);
     }
     return result;
 }
+
 
 // Save the results (magnitudes or other data) to a file
 void saveResultsToFile(const std::vector<float>& data, const std::string& filename) {

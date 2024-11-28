@@ -82,13 +82,16 @@ int main() {
 
             case 4:
                 {
-                    std::vector<float> xPowerYResults = calculateXPowerY(data);  // Calculate x^y
+                    // Calculate x^y for each data point
+                    std::vector<float> xPowerYResults = calculateXPowerY(data);
 
                     // Print out the results
                     std::cout << "Results of x^y:" << std::endl;
                     for (size_t i = 0; i < xPowerYResults.size(); ++i) {
                         std::cout << "x^y[" << i << "] = " << xPowerYResults[i] << std::endl;
                     }
+
+
 
                     std::cout << "Do you want to save the results? (y/n): ";
                     char save;

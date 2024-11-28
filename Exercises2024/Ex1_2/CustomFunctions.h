@@ -30,7 +30,7 @@ void readErrorsFromFile(const std::string& filename, std::vector<float>& errors)
 
 void saveResultsToFile(const std::vector<float>& data, const std::string& filename);
 void calculateChiSquared(const std::vector<std::pair<float, float>>& data, const std::vector<float>& errors);  // chi-squared calculation declaration
-std::vector<float> calculateXPowerY(const std::vector<std::pair<float, float>>& data);  // New function to calculate x^y
+std::vector<float> calculateXPowerY(const std::vector<std::pair<float, float>>& data);
 void saveDataToFile(const std::vector<std::pair<float, float>>& data, const std::string& filename);  // Save function
 
 #endif
