@@ -1,6 +1,14 @@
 #include "Distributions.h"
 #include <iostream>
 #include <cmath>
+#include <vector>
+#include <cstdlib>
+#include <ctime>
+
+// Helper function for generating uniform random numbers
+double generateRandomUniform() {
+    return static_cast<double>(rand()) / RAND_MAX;
+}
 
 // Normal Distribution Implementation
 NormalDistribution::NormalDistribution(double mu, double sigma, double range_min, double range_max, std::string outfile)
@@ -16,6 +24,20 @@ void NormalDistribution::printInfo() {
     std::cout << "Normal Distribution with mu = " << m_mu << ", sigma = " << m_sigma << std::endl;
 }
 
+std::vector<double> NormalDistribution::sampleData(int nPoints, double stepSize) {
+    std::vector<double> samples;
+    double x = m_RMin + (m_RMax - m_RMin) * generateRandomUniform(); // Start with a random point
+    for (int i = 0; i < nPoints; ++i) {
+        double y = x + stepSize * (generateRandomUniform() - 0.5); // Propose new point y
+        double A = std::min(callFunction(y) / callFunction(x), 1.0);
+        if (generateRandomUniform() < A) {
+            x = y; // Accept y
+        }
+        samples.push_back(x);
+    }
+    return samples;
+}
+
 // Cauchy-Lorentz Distribution Implementation
 CauchyLorentzDistribution::CauchyLorentzDistribution(double x0, double gamma, double range_min, double range_max, std::string outfile)
     : FiniteFunction(range_min, range_max, outfile), m_x0(x0), m_gamma(gamma) {}
@@ -28,6 +50,20 @@ double CauchyLorentzDistribution::callFunction(double x) {
 void CauchyLorentzDistribution::printInfo() {
     FiniteFunction::printInfo();
     std::cout << "Cauchy-Lorentz Distribution with x0 = " << m_x0 << ", gamma = " << m_gamma << std::endl;
+}
+
+std::vector<double> CauchyLorentzDistribution::sampleData(int nPoints, double stepSize) {
+    std::vector<double> samples;
+    double x = m_RMin + (m_RMax - m_RMin) * generateRandomUniform(); // Start with a random point
+    for (int i = 0; i < nPoints; ++i) {
+        double y = x + stepSize * (generateRandomUniform() - 0.5); // Propose new point y
+        double A = std::min(callFunction(y) / callFunction(x), 1.0);
+        if (generateRandomUniform() < A) {
+            x = y; // Accept y
+        }
+        samples.push_back(x);
+    }
+    return samples;
 }
 
 // Negative Crystal Ball Implementation
@@ -54,4 +90,18 @@ void NegativeCrystalBall::printInfo() {
     FiniteFunction::printInfo();
     std::cout << "Negative Crystal Ball Distribution with xbar = " << m_xbar
               << ", sigma = " << m_sigma << ", alpha = " << m_alpha << ", n = " << m_n << std::endl;
+}
+
+std::vector<double> NegativeCrystalBall::sampleData(int nPoints, double stepSize) {
+    std::vector<double> samples;
+    double x = m_RMin + (m_RMax - m_RMin) * generateRandomUniform(); // Start with a random point
+    for (int i = 0; i < nPoints; ++i) {
+        double y = x + stepSize * (generateRandomUniform() - 0.5); // Propose new point y
+        double A = std::min(callFunction(y) / callFunction(x), 1.0);
+        if (generateRandomUniform() < A) {
+            x = y; // Accept y
+        }
+        samples.push_back(x);
+    }
+    return samples;
 }
