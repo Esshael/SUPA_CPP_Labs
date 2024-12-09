@@ -1,23 +1,29 @@
-CC=g++ #Name of compiler
-FLAGS=-std=c++20 -w #Compiler flags (the s makes it silent)
-TARGET=Test #Executable name
-OBJECTS=Test.o FiniteFunctions.o
+CC=g++               # Name of compiler
+FLAGS=-std=c++20 -w  # Compiler flags (-w suppresses warnings)
+TARGET=Test          # Executable name
+OBJECTS=Test.o FiniteFunctions.o Distributions.o
 LIBS=-I ../../GNUplot/ -lboost_iostreams
 
-#First target in Makefile is default
-${TARGET}:${OBJECTS} #Make target from objects
+# Default target
+${TARGET}: ${OBJECTS}
 	@echo "Linking..."
 	${CC} ${FLAGS} ${OBJECTS} ${LIBS} -o ${TARGET}
 	@make clean
 
-Test.o : Test.cxx FiniteFunctions.h
+# Compile Test.o
+Test.o: Test.cxx FiniteFunctions.h Distributions.h
 	${CC} ${FLAGS} ${LIBS} -c Test.cxx
 
-FiniteFunctions.o : FiniteFunctions.cxx FiniteFunctions.h
+# Compile FiniteFunctions.o
+FiniteFunctions.o: FiniteFunctions.cxx FiniteFunctions.h
 	${CC} ${FLAGS} ${LIBS} -c FiniteFunctions.cxx
 
-clean: #No targets just run shell command to rm object files and emacs backups
-	@rm -f *.o *~
+# Compile Distributions.o
+Distributions.o: Distributions.cxx Distributions.h
+	${CC} ${FLAGS} ${LIBS} -c Distributions.cxx
 
-cleantarget: #Delete the exectuable
-	@rm -f ${TARGET}
+clean:
+	rm -f *.o *~
+
+cleantarget:
+	rm -f ${TARGET}

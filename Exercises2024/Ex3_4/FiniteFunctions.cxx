@@ -61,10 +61,17 @@ double FiniteFunction::callFunction(double x) {return this->invxsquared(x);}; //
 Integration by hand (output needed to normalise function when plotting)
 ###################
 */ 
-double FiniteFunction::integrate(int Ndiv){ //private
-  //ToDo write an integrator
-  return -99;  
+
+double FiniteFunction::integrate(int Ndiv) {
+    double step = (m_RMax - m_RMin) / Ndiv;
+    double sum = 0.5 * (callFunction(m_RMin) + callFunction(m_RMax));
+    for (int i = 1; i < Ndiv; ++i) {
+        sum += callFunction(m_RMin + i * step);
+    }
+    return step * sum;
 }
+
+
 double FiniteFunction::integral(int Ndiv) { //public
   if (Ndiv <= 0){
     std::cout << "Invalid number of divisions for integral, setting Ndiv to 1000" <<std::endl;
@@ -77,6 +84,7 @@ double FiniteFunction::integral(int Ndiv) { //public
   }
   else return m_Integral; //Don't bother re-calculating integral if Ndiv is the same as the last call
 }
+
 
 /*
 ###################
