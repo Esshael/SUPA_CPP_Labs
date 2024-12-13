@@ -1,53 +1,77 @@
-#include <iostream>
-#include <vector>
-#include <string>
 #include "Distributions.h"
-#include "FiniteFunctions.h"
+#include <fstream>
+#include <vector>
+#include <iostream>
+#include <limits>
 
-// Function to load mystery data
-std::vector<double> loadData(const std::string &filename) {
-    std::ifstream file(filename);
+// Load random data
+std::vector<double> loadRandomData(const std::string& filename) {
     std::vector<double> data;
+    std::ifstream file(filename);
     double value;
+
+    if (!file.is_open()) {
+        std::cerr << "Error: Could not open file " << filename << std::endl;
+        return data;
+    }
+
     while (file >> value) {
         data.push_back(value);
     }
+
+    file.close();
     return data;
 }
 
-// Function to test and print the best parameters for each distribution
-void testDistributions() {
-    std::vector<double> mysteryData = loadData("Outputs/data/MysteryData20212.txt");
+// Calculate mean squared error
+double calculateMSE(const std::vector<double>& data, FiniteFunction& function) {
+    double mse = 0.0;
+    for (const auto& x : data) {
+        double modelValue = function.callFunction(x) / function.integral(1000);
+        mse += (x - modelValue) * (x - modelValue);
+    }
+    return mse / data.size();
+}
 
-    // Test Normal Distribution
-    NormalDistribution normal(0.0, 1.0, -5.0, 5.0, "NormalDistribution");
-    normal.integral(1000);  // Calculate the integral
-    normal.plotFunction();
-    normal.plotData(mysteryData, 50);
-    normal.printInfo();
-    std::cout << "Best Normal Distribution Parameters: mu = " << normal.m_mu << ", sigma = " << normal.m_sigma << std::endl;
+// Optimize parameters for Normal Distribution
+void optimizeParameters(std::vector<double>& data, NormalDistribution& normal) {
+    double bestMean = 0.0, bestSigma = 1.0;
+    double bestError = std::numeric_limits<double>::max();
 
-    // Test Cauchy-Lorentz Distribution
-    CauchyLorentzDistribution cauchy(0.0, 1.0, -5.0, 5.0, "CauchyDistribution");
-    cauchy.integral(1000);  // Calculate the integral
-    cauchy.plotFunction();
-    cauchy.plotData(mysteryData, 50);
-    cauchy.printInfo();
-    std::cout << "Best Cauchy-Lorentz Distribution Parameters: x0 = " << cauchy.m_x0 << ", gamma = " << cauchy.m_gamma << std::endl;
+    for (double mean = -5.0; mean <= 5.0; mean += 0.1) {
+        for (double sigma = 0.1; sigma <= 5.0; sigma += 0.1) {
+            normal = NormalDistribution(mean, sigma, -5.0, 5.0, "NormalFit");
+            double error = calculateMSE(data, normal);
+            if (error < bestError) {
+                bestError = error;
+                bestMean = mean;
+                bestSigma = sigma;
+            }
+        }
+    }
 
-    // Test Negative Crystal Ball Distribution
-    NegativeCrystalBall crystalBall(0.0, 1.0, 1.5, 2.0, -5.0, 5.0, "NegativeCrystalBall");
-    crystalBall.integral(1000);  // Calculate the integral
-    crystalBall.plotFunction();
-    crystalBall.plotData(mysteryData, 50);
-    crystalBall.printInfo();
-    std::cout << "Best Negative Crystal Ball Parameters: xbar = " << crystalBall.m_xbar 
-              << ", sigma = " << crystalBall.m_sigma 
-              << ", alpha = " << crystalBall.m_alpha 
-              << ", n = " << crystalBall.m_n << std::endl;
+    std::cout << "Best Fit Parameters: mean = " << bestMean
+              << ", sigma = " << bestSigma
+              << ", error = " << bestError << std::endl;
+
+    normal = NormalDistribution(bestMean, bestSigma, -5.0, 5.0, "BestNormalFit");
 }
 
 int main() {
-    testDistributions();
+    // Load data
+    std::string dataFile = "Outputs/data/MysteryData12345.txt";
+    std::vector<double> randomData = loadRandomData(dataFile);
+
+    // Candidate distributions
+    NormalDistribution normal(0.0, 1.0, -5.0, 5.0, "NormalDistribution");
+
+    // Optimize parameters
+    optimizeParameters(randomData, normal);
+
+    // Plot the fit
+    normal.plotFunction();
+    normal.plotData(randomData, 50);
+    normal.printInfo();
+
     return 0;
 }

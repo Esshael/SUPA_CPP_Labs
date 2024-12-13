@@ -8,7 +8,7 @@ public:
     FiniteFunction();
     FiniteFunction(double range_min, double range_max, std::string outfile);
     virtual ~FiniteFunction();
-    
+
     double rangeMin();
     double rangeMax();
     double integral(int Ndiv = 1000);
@@ -20,7 +20,16 @@ public:
     virtual void printInfo();
     virtual double callFunction(double x);
 
+    std::vector<std::pair<double, double>> scanFunction(int Nscan = 1000);
+
 protected:
+    double integrate(int Ndiv);
+    std::vector<std::pair<double, double>> makeHist(std::vector<double>& points, int Nbins);
+    void checkPath(std::string outstring);
+    void generatePlot(Gnuplot& gp);
+
+private:
+    double invxsquared(double x);
     double m_RMin;
     double m_RMax;
     double m_Integral;
@@ -34,10 +43,4 @@ protected:
     bool m_plotfunction = false;
     bool m_plotdatapoints = false;
     bool m_plotsamplepoints = false;
-
-    double integrate(int Ndiv);
-    std::vector<std::pair<double, double>> makeHist(std::vector<double>& points, int Nbins);
-    void checkPath(std::string outstring);
-    void generatePlot(Gnuplot& gp);
-    double invxsquared(double x);
 };
