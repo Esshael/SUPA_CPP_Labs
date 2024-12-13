@@ -1,11 +1,16 @@
 #pragma once
-#include "FiniteFunctions.h"
+#include "FiniteFunctions.h"  // Now we can include this to inherit from FiniteFunction
+#include <vector>
+#include <random>
 
 class NormalDistribution : public FiniteFunction {
 public:
     NormalDistribution(double mean, double sigma, double range_min, double range_max, std::string outfile);
     double callFunction(double x) override;
     void printInfo() override;
+
+    // Method for Metropolis sampling
+    std::vector<double> metropolisSample(int Nsteps, double stepSize);
 
 private:
     double m_Mean;

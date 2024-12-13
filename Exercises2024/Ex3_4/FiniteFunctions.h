@@ -3,6 +3,10 @@
 #include <vector>
 #include "gnuplot-iostream.h"
 
+// Forward declaration of NormalDistribution, CauchyLorentzDistribution, NegativeCrystalBallDistribution
+class NormalDistribution;
+class CauchyLorentzDistribution;
+class NegativeCrystalBallDistribution;
 class FiniteFunction {
 public:
     FiniteFunction();
@@ -22,14 +26,15 @@ public:
 
     std::vector<std::pair<double, double>> scanFunction(int Nscan = 1000);
 
-    // Method to enable plotting for the function
-    void enablePlotFunction() { m_plotfunction = true; }
-
 protected:
     double integrate(int Ndiv);
     std::vector<std::pair<double, double>> makeHist(std::vector<double>& points, int Nbins);
     void checkPath(std::string outstring);
     void generatePlot(Gnuplot& gp);
+
+    // Getter functions for m_RMin and m_RMax
+    double getRangeMin() const { return m_RMin; }
+    double getRangeMax() const { return m_RMax; }
 
 private:
     double invxsquared(double x);

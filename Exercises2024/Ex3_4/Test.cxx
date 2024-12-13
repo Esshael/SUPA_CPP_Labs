@@ -3,6 +3,7 @@
 #include <fstream>
 #include <vector>
 #include <iostream>
+#include <chrono>
 
 // Load random data
 std::vector<double> loadRandomData(const std::string &filename) {
@@ -23,29 +24,28 @@ std::vector<double> loadRandomData(const std::string &filename) {
     return data;
 }
 
+
 int main() {
-    // Load random data
+    // Load random data from file
     std::vector<double> randomData = loadRandomData("Outputs/data/MysteryData20212.txt");
 
-    // Create distributions
+    // Create the Normal distribution object
     NormalDistribution normal(-2.01, 2.00, -10.0, 10.0, "NormalDistribution");
-    CauchyLorentzDistribution cauchy(-0.33, 2.63, -10.0, 10.0, "CauchyDistribution");
-    NegativeCrystalBallDistribution crystal(-0.33, 2.63, 9.75, 0.06, -10.0, 10.0, "CrystalDistribution");
 
-    // Enable data plotting for random data
-    normal.plotData(randomData, 50); // Enable data plotting
-    cauchy.plotData(randomData, 50); // Enable data plotting
-    crystal.plotData(randomData, 50); // Enable data plotting
-
-    // Generate plots for distributions
+    // Plot original data and the function
     normal.plotFunction();
-    cauchy.plotFunction();
-    crystal.plotFunction();
-
-    // Print distribution information
+    normal.plotData(randomData, 50);  // 50 bins for histogram
     normal.printInfo();
-    cauchy.printInfo();
-    crystal.printInfo();
+
+    // Generate Metropolis sampled data
+    int Nsteps = 10000;
+    double stepSize = 0.0005; // You can tweak this step size to see how the sampling quality changes
+    std::vector<double> sampledData = normal.metropolisSample(Nsteps, stepSize);
+
+    // Plot the function and the data generated using Metropolis sampling
+    normal.plotFunction();
+    normal.plotData(sampledData, 50);  // 50 bins for the sampled data
+    normal.printInfo();
 
     return 0;
 }
