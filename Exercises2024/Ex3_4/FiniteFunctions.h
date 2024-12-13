@@ -22,6 +22,9 @@ public:
 
     std::vector<std::pair<double, double>> scanFunction(int Nscan = 1000);
 
+    // Method to enable plotting for the function
+    void enablePlotFunction() { m_plotfunction = true; }
+
 protected:
     double integrate(int Ndiv);
     std::vector<std::pair<double, double>> makeHist(std::vector<double>& points, int Nbins);

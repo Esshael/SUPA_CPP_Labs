@@ -67,17 +67,26 @@ Integration by hand (output needed to normalise function when plotting)
 Integration by hand (output needed to normalise function when plotting)
 ###################
 */
+// 
+
 double FiniteFunction::integrate(int Ndiv) {
     if (Ndiv <= 0) return 0.0; // Avoid division by zero
-    double step = (m_RMax - m_RMin) / Ndiv; // Step size
-    double integral = 0.5 * (callFunction(m_RMin) + callFunction(m_RMax)); // Endpoints
+    if (Ndiv % 2 == 1) Ndiv++;  // Ensure Ndiv is even for Simpson's rule
 
-    for (int i = 1; i < Ndiv; ++i) {
-        double x = m_RMin + i * step; // Current x value
-        integral += callFunction(x); // Sum up function values
+    double step = (m_RMax - m_RMin) / Ndiv; // Step size
+    double integral = callFunction(m_RMin) + callFunction(m_RMax); // Initial and final points
+
+    // Apply Simpson's Rule: sum over odd and even indices
+    for (int i = 1; i < Ndiv; i++) {
+        double x = m_RMin + i * step;
+        if (i % 2 == 0) {
+            integral += 4 * callFunction(x); // Coefficients for odd indices
+        } else {
+            integral += 2 * callFunction(x); // Coefficients for even indices
+        }
     }
 
-    return step * integral; // Multiply by step size for the total integral
+    return (step / 3) * integral;  // Multiply by step size and factor of 1/3
 }
 
 
