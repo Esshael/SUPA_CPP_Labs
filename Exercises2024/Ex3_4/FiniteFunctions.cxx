@@ -62,14 +62,24 @@ Integration by hand (output needed to normalise function when plotting)
 ###################
 */ 
 
+/*
+###################
+Integration by hand (output needed to normalise function when plotting)
+###################
+*/
 double FiniteFunction::integrate(int Ndiv) {
-    double step = (m_RMax - m_RMin) / Ndiv;
-    double sum = 0.5 * (callFunction(m_RMin) + callFunction(m_RMax));
+    if (Ndiv <= 0) return 0.0; // Avoid division by zero
+    double step = (m_RMax - m_RMin) / Ndiv; // Step size
+    double integral = 0.5 * (callFunction(m_RMin) + callFunction(m_RMax)); // Endpoints
+
     for (int i = 1; i < Ndiv; ++i) {
-        sum += callFunction(m_RMin + i * step);
+        double x = m_RMin + i * step; // Current x value
+        integral += callFunction(x); // Sum up function values
     }
-    return step * sum;
+
+    return step * integral; // Multiply by step size for the total integral
 }
+
 
 
 double FiniteFunction::integral(int Ndiv) { //public

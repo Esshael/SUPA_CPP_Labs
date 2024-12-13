@@ -2,6 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <iostream>
+#include <cmath>
 #include <limits>
 
 // Load random data
@@ -23,25 +24,34 @@ std::vector<double> loadRandomData(const std::string& filename) {
     return data;
 }
 
-// Calculate mean squared error
-double calculateMSE(const std::vector<double>& data, FiniteFunction& function) {
-    double mse = 0.0;
-    for (const auto& x : data) {
-        double modelValue = function.callFunction(x) / function.integral(1000);
-        mse += (x - modelValue) * (x - modelValue);
+// Calculate Sum of Squared Errors (SSE)
+double calculateSSE(const std::vector<double>& data, FiniteFunction& function, int Ndiv = 1000) {
+    double sse = 0.0;
+
+    // Ensure the integral is up-to-date
+    function.integral(Ndiv);
+
+    // Compute SSE by comparing model to data
+    for (double point : data) {
+        double modelValue = function.callFunction(point);  // Get the model value
+        sse += (modelValue - point) * (modelValue - point);  // Sum squared errors
     }
-    return mse / data.size();
+
+    return sse;
 }
 
-// Optimize parameters for Normal Distribution
+// Grid search for fitting the Normal distribution parameters
 void optimizeParameters(std::vector<double>& data, NormalDistribution& normal) {
-    double bestMean = 0.0, bestSigma = 1.0;
+    double bestMean = -2.0;  // Starting guess
+    double bestSigma = 5.0;  // Large initial guess for sigma
     double bestError = std::numeric_limits<double>::max();
+    int Ndiv = 1000;  // Number of subdivisions for the integral
 
-    for (double mean = -5.0; mean <= 5.0; mean += 0.1) {
-        for (double sigma = 0.1; sigma <= 5.0; sigma += 0.1) {
+    // Perform grid search over a range of values for mean and sigma
+    for (double mean = -10.0; mean <= 10.0; mean += 0.1) {
+        for (double sigma = 0.0; sigma <= 100.0; sigma += 0.5) {
             normal = NormalDistribution(mean, sigma, -5.0, 5.0, "NormalFit");
-            double error = calculateMSE(data, normal);
+            double error = calculateSSE(data, normal, Ndiv);
             if (error < bestError) {
                 bestError = error;
                 bestMean = mean;
@@ -54,23 +64,23 @@ void optimizeParameters(std::vector<double>& data, NormalDistribution& normal) {
               << ", sigma = " << bestSigma
               << ", error = " << bestError << std::endl;
 
+    // Create a Normal distribution with the optimized parameters
     normal = NormalDistribution(bestMean, bestSigma, -5.0, 5.0, "BestNormalFit");
 }
 
 int main() {
-    // Load data
-    std::string dataFile = "Outputs/data/MysteryData20212.txt";
-    std::vector<double> randomData = loadRandomData(dataFile);
+    // Load random data from file
+    std::vector<double> randomData = loadRandomData("Outputs/data/MysteryData12345.txt");
 
-    // Candidate distributions
+    // Create the Normal distribution object
     NormalDistribution normal(0.0, 1.0, -5.0, 5.0, "NormalDistribution");
 
-    // Optimize parameters
+    // Perform parameter optimization to find the best fit
     optimizeParameters(randomData, normal);
 
-    // Plot the fit
+    // Plot the results: fitted function and the data
     normal.plotFunction();
-    normal.plotData(randomData, 50);
+    normal.plotData(randomData, 50);  // 50 bins for histogram
     normal.printInfo();
 
     return 0;
