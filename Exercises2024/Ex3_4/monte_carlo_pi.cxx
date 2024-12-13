@@ -1,3 +1,9 @@
+// @Esshael ➜ /workspaces/SUPA_CPP_Labs/Exercises2024/Ex3_4 (main) $ g++ -std=c++20 -o monte_carlo_pi monte_carlo_pi.cxx
+// @Esshael ➜ /workspaces/SUPA_CPP_Labs/Exercises2024/Ex3_4 (main) $ ./monte_carlo_pi 1.0 100000
+// Estimated value of Pi: 3.15212
+// @Esshael ➜ /workspaces/SUPA_CPP_Labs/Exercises2024/Ex3_4 (main) $ ./monte_carlo_pi 1.0 10000000
+// Estimated value of Pi: 3.1421792
+
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
