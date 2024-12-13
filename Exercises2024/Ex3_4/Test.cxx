@@ -70,7 +70,7 @@ void optimizeParameters(std::vector<double>& data, NormalDistribution& normal) {
 
 int main() {
     // Load random data from file
-    std::vector<double> randomData = loadRandomData("Outputs/data/MysteryData12345.txt");
+    std::vector<double> randomData = loadRandomData("Outputs/data/MysteryData20212.txt");
 
     // Create the Normal distribution object
     NormalDistribution normal(0.0, 1.0, -5.0, 5.0, "NormalDistribution");
