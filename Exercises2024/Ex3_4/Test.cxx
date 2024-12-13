@@ -59,7 +59,7 @@ void optimizeParameters(std::vector<double>& data, NormalDistribution& normal) {
 
 int main() {
     // Load data
-    std::string dataFile = "Outputs/data/MysteryData12345.txt";
+    std::string dataFile = "Outputs/data/MysteryData20212.txt";
     std::vector<double> randomData = loadRandomData(dataFile);
 
     // Candidate distributions
